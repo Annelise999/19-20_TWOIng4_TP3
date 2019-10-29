@@ -1,9 +1,12 @@
-
 // Fonction appelée lors du click du bouton
 function start() {
 
-  const city = document.getElementById('city-input').value === ''
-    ? undefined : document.getElementById('city-input').value;
+   
+  city = document.getElementById('city-input').value; //q3
+  if(city === "")
+  { city=undefined;
+  }
+
   // Création de l'objet apiWeather
   const apiWeather = new API_WEATHER(city);
   // Appel de la fonction fetchTodayForecast
@@ -20,7 +23,6 @@ function start() {
       const temp = data.main.temp;
       const icon = apiWeather.getHTMLElementFromIcon(data.weather[0].icon);
 
-
       // Modifier le DOM
       document.getElementById('today-forecast-main').innerHTML = main;
       document.getElementById('today-forecast-more-info').innerHTML = description;
@@ -33,24 +35,29 @@ function start() {
       console.error(error);
     });
 
- 
-     apiWeather
+//recup des 3 jours
+
+    apiWeather
     .fetchTDaysForecast()
     .then(function(response) {
       // Récupère la donnée d'une API
       const data2 = response.data;
-     
+      let compteur=0;
 
-      // Modifier le DOM
-      document.getElementById('tomorrow-forecast-main').innerHTML = city;
-      document.getElementById('tomorrow-forecast-more-info').innerHTML = data2.weather[0].description;
-      document.getElementById('icon-weather-container').innerHTML = apiWeather.getHTMLElementFromIcon(data2.weather[0].icon);
-      document.getElementById('tomorrow-forecast-temp').innerHTML = `${data2.main.temp}°C`;
+
+      data2.list.forEach((data2, index)=> {
+      compteur++;
+
+      document.getElementById(`${compteur}-forecast-main`).innerHTML = data2.weather[0].main;
+      document.getElementById(`${compteur}-forecast-more-info`).innerHTML = data2.weather[0].description;
+      document.getElementById(`${compteur}-icon-weather-container`).innerHTML = apiWeather.getHTMLElementFromIcon(data2.weather[0].icon);
+      document.getElementById(`${compteur}-forecast-temp`).innerHTML = `${data2.temp.day}°C`;
       
-    })
-    .catch(function(error) {
-      // Affiche une erreur
-      console.error(error);
     });
 
+  
+  });
+
+ 
 }
+
